@@ -1,0 +1,47 @@
+<edmx:Edmx xmlns:edmx="http://schemas.microsoft.com/ado/2007/06/edmx"
+	xmlns:m="http://schemas.microsoft.com/ado/2007/08/dataservices/metadata" xmlns:sap="http://www.sap.com/Protocols/SAPData" Version="1.0">
+	<edmx:Reference xmlns:edmx="http://docs.oasis-open.org/odata/ns/edmx"
+		Uri="https://my304415.s4hana.ondemand.com:443/sap/opu/odata/IWFND/CATALOGSERVICE;v=2/Vocabularies(TechnicalName='%2FIWBEP%2FVOC_COMMON',Version='0001',SAP__Origin='')/$value"><edmx:Include Namespace="com.sap.vocabularies.Common.v1" Alias="Common"/></edmx:Reference>
+	<edmx:Reference xmlns:edmx="http://docs.oasis-open.org/odata/ns/edmx"
+		Uri="https://my304415.s4hana.ondemand.com:443/sap/opu/odata/IWFND/CATALOGSERVICE;v=2/Vocabularies(TechnicalName='%2FIWBEP%2FVOC_CAPABILITIES',Version='0001',SAP__Origin='')/$value"><edmx:Include Namespace="Org.OData.Capabilities.V1" Alias="Capabilities"/></edmx:Reference>
+	<edmx:Reference xmlns:edmx="http://docs.oasis-open.org/odata/ns/edmx"
+		Uri="https://my304415.s4hana.ondemand.com:443/sap/opu/odata/IWFND/CATALOGSERVICE;v=2/Vocabularies(TechnicalName='%2FIWBEP%2FVOC_COMMUNICATION',Version='0001',SAP__Origin='')/$value"><edmx:Include Namespace="com.sap.vocabularies.Communication.v1" Alias="Communication"/></edmx:Reference>
+	<edmx:Reference xmlns:edmx="http://docs.oasis-open.org/odata/ns/edmx"
+		Uri="https://my304415.s4hana.ondemand.com:443/sap/opu/odata/IWFND/CATALOGSERVICE;v=2/Vocabularies(TechnicalName='%2FIWBEP%2FVOC_AGGREGATION',Version='0001',SAP__Origin='')/$value"><edmx:Include Namespace="Org.OData.Aggregation.V1" Alias="Aggregation"/></edmx:Reference>
+	<edmx:Reference xmlns:edmx="http://docs.oasis-open.org/odata/ns/edmx"
+		Uri="https://my304415.s4hana.ondemand.com:443/sap/opu/odata/IWFND/CATALOGSERVICE;v=2/Vocabularies(TechnicalName='%2FIWBEP%2FVOC_PERSONALDATA',Version='0001',SAP__Origin='')/$value"><edmx:Include Namespace="com.sap.vocabularies.PersonalData.v1" Alias="PersonalData"/></edmx:Reference>
+	<edmx:DataServices m:DataServiceVersion="2.0">
+		<Schema xmlns="http://schemas.microsoft.com/ado/2008/09/edm" Namespace="YY1_UTM_PARAMETER_CDS" xml:lang="en" sap:schema-version="1">
+			<EntityType Name="YY1_UTM_PARAMETERType" sap:label="UTM_PARAMETER" sap:content-version="1">
+				<Key><PropertyRef Name="SAP_UUID"/></Key><Property Name="SAP_UUID" Type="Edm.Guid" Nullable="false" sap:label="UUID" sap:quickinfo="16 Byte UUID in 16 Bytes (Raw Format)"/><Property Name="CONTENT_ID" Type="Edm.String" MaxLength="10" sap:display-format="NonNegative" sap:label="CONTENT_ID"/><Property Name="INITIATIVE_ID" Type="Edm.String" MaxLength="10" sap:display-format="NonNegative" sap:label="INITIATIVE_ID"/><Property Name="UTM_SOURCE" Type="Edm.String" MaxLength="100" sap:label="UTM_SOURCE"/><Property Name="UTM_CAMPAIGN" Type="Edm.String" MaxLength="200" sap:label="UTM_CAMPAIGN"/><Property Name="UTM_CONTENT" Type="Edm.String" MaxLength="100" sap:label="UTM_CONTENT"/><Property Name="URL_APPEND" Type="Edm.String" MaxLength="100" sap:label="URL_APPEND"/></EntityType>
+			<EntityContainer Name="YY1_UTM_PARAMETER_CDS_Entities" m:IsDefaultEntityContainer="true" sap:message-scope-supported="true"
+				sap:supported-formats="atom json xlsx"><EntitySet Name="YY1_UTM_PARAMETER" EntityType="YY1_UTM_PARAMETER_CDS.YY1_UTM_PARAMETERType" sap:searchable="true" sap:content-version="1"/>
+				<FunctionImport Name="YY1_UTM_PARAMETERSap_upsert" ReturnType="YY1_UTM_PARAMETER_CDS.YY1_UTM_PARAMETERType" EntitySet="YY1_UTM_PARAMETER"
+					m:HttpMethod="POST"><Parameter Name="CONTENT_ID" Type="Edm.String" Mode="In" MaxLength="10"/><Parameter Name="INITIATIVE_ID" Type="Edm.String" Mode="In" MaxLength="10"/><Parameter Name="UTM_SOURCE" Type="Edm.String" Mode="In" MaxLength="100"/><Parameter Name="UTM_CAMPAIGN" Type="Edm.String" Mode="In" MaxLength="200"/><Parameter Name="UTM_CONTENT" Type="Edm.String" Mode="In" MaxLength="100"/><Parameter Name="URL_APPEND" Type="Edm.String" Mode="In" MaxLength="100"/></FunctionImport>
+			</EntityContainer>
+			<Annotations xmlns="http://docs.oasis-open.org/odata/ns/edm" Target="YY1_UTM_PARAMETER_CDS.YY1_UTM_PARAMETER_CDS_Entities">
+				<Annotation Term="Aggregation.ApplySupported">
+					<Record>
+						<PropertyValue Property="Transformations">
+							<Collection>
+								<String>aggregate</String>
+								<String>groupby</String>
+								<String>filter</String>
+							</Collection>
+						</PropertyValue><PropertyValue Property="Rollup" EnumMember="None"/></Record>
+				</Annotation>
+			</Annotations>
+			<Annotations xmlns="http://docs.oasis-open.org/odata/ns/edm" Target="YY1_UTM_PARAMETER_CDS.YY1_UTM_PARAMETERType/CONTENT_ID"><Annotation Term="Common.FieldControl" EnumMember="Common.FieldControlType/Mandatory"/></Annotations>
+			<Annotations xmlns="http://docs.oasis-open.org/odata/ns/edm" Target="YY1_UTM_PARAMETER_CDS.YY1_UTM_PARAMETERType/INITIATIVE_ID"><Annotation Term="Common.FieldControl" EnumMember="Common.FieldControlType/Mandatory"/></Annotations>
+			<Annotations xmlns="http://docs.oasis-open.org/odata/ns/edm" Target="YY1_UTM_PARAMETER_CDS.YY1_UTM_PARAMETERType">
+				<Annotation Term="Common.SemanticKey">
+					<Collection>
+						<PropertyPath>INITIATIVE_ID</PropertyPath>
+						<PropertyPath>CONTENT_ID</PropertyPath>
+					</Collection>
+				</Annotation>
+			</Annotations><atom:link xmlns:atom="http://www.w3.org/2005/Atom" rel="self"
+				href="https://my304415.s4hana.ondemand.com:443/sap/opu/odata/sap/YY1_UTM_PARAMETER_CDS/$metadata"/><atom:link xmlns:atom="http://www.w3.org/2005/Atom" rel="latest-version"
+				href="https://my304415.s4hana.ondemand.com:443/sap/opu/odata/sap/YY1_UTM_PARAMETER_CDS/$metadata"/></Schema>
+	</edmx:DataServices>
+</edmx:Edmx>

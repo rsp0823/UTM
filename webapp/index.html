@@ -1,0 +1,294 @@
+<!DOCTYPE html>
+<html>
+<head>
+<style>
+.UTM {
+   		font-family: Arial;
+ 		font-size: 12px; 
+ 		background-color:#e5e6e6;border: 1px solid #808080;
+        display: inline-block;
+        border-radius: 3px;
+        box-sizing: border-box;
+        padding: 7px 5px;
+}
+.blink {
+      animation: blinker 3.6s linear 8;
+      color: green;
+      font-size: 30px;
+      font-weight: bold;
+      font-family: sans-serif;
+      }
+      @keyframes blinker {  
+      50% { opacity: 0; }
+      }
+</style>
+</head>
+<body>
+
+<div style="border-radius:5px;
+            background-color:white;
+            padding:20px;
+            width:1240px;
+            height:80px;
+            border-color:#000000;
+            border-style: solid;
+            border-width: 1px">
+            <div>
+ 		 <input type="text" id="source" name="source" value="&utm_source=" 
+ 		 readonly size='9' class = "UTM">               
+        <select class = "UTM" id = "sourceid">
+        <option value="hybris-campaign">hybris-campaign</option>
+        <option value="hybris-automated">hybris-automated</option>  
+		</select>
+        <input type="text" id="medium" name="mediumn" value="&UTM_Medium=email&UTM_Campaign=" 
+ 		 readonly size='33' class = "UTM">
+         <input type="text" id="campaign" name="campaign" value="$campaign$" 
+ 		 readonly size='41' class = "UTM">
+          <input type="text" id="content" name="content" value="&UTM_Content=" 
+ 		 readonly size='12' class = "UTM">
+        <select class = "UTM" id = "lang">
+        <option value="EN">EN</option>
+        <option value="DE">DE</option>
+        <option value="FR">FR</option>
+        <option value="ES">ES</option>
+        <option value="CN">CN</option>
+        <option value="IT">IT</option>
+        <option value="RU">RU</option>
+        <option value="KR">KR</option>
+        <option value="RU">RU</option>
+        <option value="PT">PT</option>
+        </select>
+        <select class = "UTM" id = "inter">
+        <option value="_internal">_internal</option>
+        <option value="_external">_external</option>
+        <option value="_etoc">_etoc</option>
+        <option value="_promo">_promo</option>
+        <option value="_brand">_brand</option>
+        <option value="_alert">_alert</option>
+        <option value="_renewal">_renewal</option>
+        <option value="_other">_other</option>
+        </select>
+        
+         <input type="text" id="content_url" name="content_url" value="$content_id$_" 
+ 		 readonly size='20' class = "UTM">
+         <div style="position: absolute; top:77px;left:1004px;">
+         <button type="button" id="create" style="font-family: Arial;font-size:14px;border:1px solid #000000;display:inline-block;border-radius:3px;padding: 5px;width:200px;height:30px;background-color:#e5e6e6" onclick="AssignUTM()">Assign UTM Parameters</button></div>      
+</div>
+ <p id="info" style="font-family: Arial;font-size:12px;position: absolute; top:80px;left:30px;color:Blue;"><i>Note: No UTM parameters assigned to this campaign</i></p>   
+ <p id="res" class="blink" style="font-family: Arial;font-size:14px;position: absolute; top:96px;left:1002px;color:green;"><b></b></p>
+
+
+</div>
+
+
+<script >
+var data = null;
+var utmcamp_data = null;
+var xhr = new XMLHttpRequest();
+var xhr_ini = new XMLHttpRequest();
+var xhr_camp = new XMLHttpRequest();
+var xhr_post = new XMLHttpRequest();
+xhr.withCredentials = false;
+var today = new Date();
+var year = today.getFullYear();
+var month = today.getMonth() + 1;
+var day = today.getDate();
+var ym = year.toString().concat(month.toString());
+var date = ym.toString().concat(day.toString());
+var contd = document.getElementById("content_url").value;
+var contdt = contd.concat(date)
+document.getElementById("content_url").value = contdt;
+
+xhr_camp.addEventListener("readystatechange", function() {
+
+    if (this.readyState === this.DONE) {
+        console.log(this.responseText);
+        var objresp = this.responseText;
+        var obj = JSON.parse(objresp);
+        console.log(obj.d.results[0].YY1_CampaignGoal_MIN);
+        var goal = obj.d.results[0].YY1_CampaignGoal_MIN;
+        var createdBy = obj.d.results[0].CreatedByUser;
+        var CampaignName = getUrlVars()["CampaignName"];
+        var Id = getUrlVars()["Id"];
+
+        document.getElementById("campaign").value = goal + "_" + createdBy + "_" + Id + "_" + CampaignName;
+
+    }
+});
+
+var Campaign_id = getUrlVars()["Id"];
+var utm_campurl = "/campaign/sap/opu/odata/sap/API_MKT_CAMPAIGN_SRV;v=0002/Campaigns?$filter=CampaignID eq '#ID'&$select=YY1_CampaignGoal_MIN,CreatedByUser&$top=1"
+var urltmp = encodeURI(utm_campurl);
+//console.log(urlcamp);
+var urlcamp = urltmp.replace("#ID", Campaign_id);
+console.log(urlcamp);
+
+xhr_camp.open("GET", urlcamp);
+xhr_camp.setRequestHeader("Content-Type", "application/json");
+xhr_camp.setRequestHeader("Accept", "application/json");
+xhr_camp.send(utmcamp_data);
+
+var urlini = "/UTMTagging/sap/opu/odata/sap/YY1_UTM_PARAMETER_CDS/YY1_UTM_PARAMETER?$filter=INITIATIVE_ID eq '#ID'";
+    var urltmpini = encodeURI(urlini);
+    var urlutmini = urltmpini.replace("#ID", Campaign_id);
+    
+    xhr_ini.open("GET", urlutmini);
+    xhr_ini.setRequestHeader("Content-Type", "application/json");
+xhr_ini.setRequestHeader("Accept", "application/json");
+xhr_ini.send(utmcamp_data);
+
+xhr_ini.addEventListener("readystatechange", function() {
+
+        if (this.readyState === this.DONE) {
+            console.log(this.responseText);
+            
+            
+
+        }
+    });
+    
+    xhr_ini.onload = function() {
+        var objresp = this.responseText;
+            var obj = JSON.parse(objresp);
+            //console.log(obj.d.results[0].CONTENT_ID);
+            if (obj.d.results[0] != null) {
+            	var ini_id = obj.d.results[0].INITIATIVE_ID;
+                var source_id = obj.d.results[0].UTM_SOURCE;
+                var camp_id = obj.d.results[0]. UTM_CAMPAIGN;
+                var conte_id = obj.d.results[0].UTM_CONTENT;
+                var intrnal = conte_id.split("_");
+                
+              document.getElementById("info").innerHTML = "Note:UTM parameters are already assigned to this campaign";
+              var tempmss = document.getElementById("info").innerHTML;
+              var note = tempmss.italics() ; 
+               document.getElementById("info").innerHTML = note;
+    document.getElementById("sourceid").value = source_id;
+   // document.getElementById("medium").value;
+    document.getElementById("campaign").value = camp_id ;
+    //var utm_cnt = document.getElementById("content").value;
+   document.getElementById("lang").value = intrnal[0] ;
+   document.getElementById("inter").value = "_" + intrnal[1] ;
+       //var utm_inter = document.getElementById("inter").value;
+   // var utm_contd = document.getElementById("content_url").value;
+    //var Campaign_id = getUrlVars()["Id"];
+    //var utm_fnl = utm_source + utm_sourceid + utm_medium + utm_cmp + utm_cnt + utm_lang + utm_inter + utm_contd;
+                
+               
+            }
+    };
+
+
+function AssignUTM() {
+	
+    document.getElementById("res").innerHTML = ""
+    var utm_source = document.getElementById("source").value;
+    var utm_sourceid = document.getElementById("sourceid").value;
+    var utm_medium = document.getElementById("medium").value;
+    var utm_cmp = document.getElementById("campaign").value;
+    var utm_cnt = document.getElementById("content").value;
+    var utm_lang = document.getElementById("lang").value;
+    var utm_inter = document.getElementById("inter").value;
+    var utm_contd = document.getElementById("content_url").value;
+    //var Campaign_id = getUrlVars()["Id"];
+    var utm_fnl = utm_source + utm_sourceid + utm_medium + utm_cmp + utm_cnt + utm_lang + utm_inter + utm_contd;
+
+    var urlutm = "/UTMTagging/sap/opu/odata/sap/YY1_UTM_PARAMETER_CDS/YY1_UTM_PARAMETER?$filter=INITIATIVE_ID eq '#ID'&$select=SAP_UUID";
+    var urltmpcmp = encodeURI(urlutm);
+    var urlutmcmp = urltmpcmp.replace("#ID", Campaign_id);
+
+    console.log(urlutmcmp)
+
+    xhr.addEventListener("readystatechange", function() {
+
+        if (this.readyState === this.DONE) {
+            console.log(this.responseText);
+            var objresp = this.responseText;
+            var obj = JSON.parse(objresp);
+            //console.log(obj.d.results[0].CONTENT_ID);
+            if (obj.d.results[0] != null) {
+                var guid = obj.d.results[0].SAP_UUID;
+            }
+            var csrf = this.getResponseHeader("x-csrf-token");
+            nextcall(csrf, guid);
+
+        }
+    });
+    xhr_post.addEventListener("readystatechange", function() {
+        if (this.readyState === this.DONE) {
+            console.log(this.responseText);
+            var objresp = this.responseText;
+
+        }
+    });
+    xhr_post.onload = function() {
+        if (xhr_post.status == '204') {
+            document.getElementById("res").innerHTML = "Updated successfully.!";
+        } else if (xhr_post.status == '201') {
+            document.getElementById("info").innerHTML = "Note:UTM parameters are assigned to this campaign";
+            document.getElementById("res").innerHTML = "Created successfully.!";
+        }
+        else
+        {
+        	document.getElementById("res").innerHTML = "Something went wrong";
+        	var messg = document.getElementById("res").innerHTML;
+        	messg.fontcolor("red");
+        	
+        }
+    };
+
+    xhr.open("GET", urlutmcmp);
+    xhr.setRequestHeader("Content-Type", "application/json");
+    xhr.setRequestHeader("x-csrf-token", "fetch");
+    xhr.setRequestHeader("Accept", "application/json");
+    xhr.send(data);
+    var utmpost_data = new Object();
+    utmpost_data.CONTENT_ID = "";
+    utmpost_data.INITIATIVE_ID = Campaign_id;
+    utmpost_data.UTM_SOURCE = utm_sourceid;
+    utmpost_data.UTM_CAMPAIGN = utm_cmp;
+    utmpost_data.UTM_CONTENT = utm_lang + utm_inter;
+    utmpost_data.URL_APPEND = "";
+    var jsonpost = JSON.stringify(utmpost_data);
+    console.log(jsonpost);
+
+
+    function nextcall(csrf, guid) {
+        var utmpost = "/UTMTagging/sap/opu/odata/sap/YY1_UTM_PARAMETER_CDS/YY1_UTM_PARAMETER";
+        var utmtemp = "/UTMTagging/sap/opu/odata/sap/YY1_UTM_PARAMETER_CDS/YY1_UTM_PARAMETER(guid'#guid')";
+
+
+        if (guid == null) {
+            console.log("Nulll");
+            xhr_post.open("POST", utmpost, true);
+            console.log(csrf);
+            console.log(guid);
+        } else {
+            var utmput = utmtemp.replace('#guid', guid);
+            console.log(utmput);
+            xhr_post.open("PUT", utmput, true);
+            console.log(csrf);
+            console.log(guid);
+        }
+        xhr_post.setRequestHeader("Content-Type", "application/json");
+        xhr_post.setRequestHeader("x-csrf-token", csrf);
+        xhr_post.setRequestHeader("Accept", "application/json");
+        xhr_post.send(jsonpost);
+    }
+
+
+
+}
+
+function getUrlVars() {
+    var url = window.location.href
+    var dec = decodeURI(url);
+    var vars = {};
+    var parts = dec.replace(/[?&]+([^=&]+)=([^&]*)/gi, function(m, key, value) {
+        vars[key] = value;
+    });
+    return vars;
+}
+
+</script>
+</body>
+</html>
