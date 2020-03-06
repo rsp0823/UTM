@@ -4,35 +4,51 @@
 <style>
 .UTM {
    		font-family: Arial;
- 		font-size: 12px; 
- 		background-color:#e5e6e6;border: 1px solid #808080;
+ 		font-size: 11px; 
+ 		background-color:#e5e6e6;
+ 		border: 1px solid #808080;
         display: inline-block;
         border-radius: 3px;
         box-sizing: border-box;
-        padding: 7px 5px;
+        padding: 5px 5px;
 }
 .blink {
       animation: blinker 3.6s linear 8;
       color: green;
-      font-size: 30px;
+      font-size: 6px;
       font-weight: bold;
       font-family: sans-serif;
       }
       @keyframes blinker {  
       50% { opacity: 0; }
       }
+ .btn {
+  background-color: #f4511e;
+  color: white;
+  padding: 4px;
+  text-align: center;
+  font-size: 14px;
+  margin: 3px 1px;
+  opacity: 0.6;
+  transition: 0.3s;
+  border:1px solid black;
+}
+
+.btn:hover {opacity: 1}
 </style>
 </head>
 <body>
 
-<div style="border-radius:5px;
-            background-color:white;
-            padding:20px;
-            width:1240px;
-            height:80px;
-            border-color:#000000;
-            border-style: solid;
-            border-width: 1px">
+<div style= "background-color:white;
+            padding:10px;
+            width:1255px;
+            height:55px;
+            border: 1px solid #808080;
+             border-radius: 3px;
+        
+           
+
+            ">
             <div>
  		 <input type="text" id="source" name="source" value="&utm_source=" 
  		 readonly size='9' class = "UTM">               
@@ -71,11 +87,11 @@
         
          <input type="text" id="content_url" name="content_url" value="$content_id$_" 
  		 readonly size='20' class = "UTM">
-         <div style="position: absolute; top:77px;left:1004px;">
-         <button type="button" id="create" style="font-family: Arial;font-size:14px;border:1px solid #000000;display:inline-block;border-radius:3px;padding: 5px;width:200px;height:30px;background-color:#e5e6e6" onclick="AssignUTM()">Assign UTM Parameters</button></div>      
+         <div style="position: absolute; top:15px;left:1173px;">
+         <button type="button" id="create" class="btn" onclick="AssignUTM()">Assign UTM</button></div>      
 </div>
- <p id="info" style="font-family: Arial;font-size:12px;position: absolute; top:80px;left:30px;color:Blue;"><i>Note: No UTM parameters assigned to this campaign</i></p>   
- <p id="res" class="blink" style="font-family: Arial;font-size:14px;position: absolute; top:96px;left:1002px;color:green;"><b></b></p>
+ <p id="info" style="font-family: Arial;font-size:11px;position: absolute; top:45px;left:18px;color:Blue;"><i>Note: No UTM parameters assigned to this campaign</i></p>   
+ <p id="res" class="blink" style="font-family: Arial;font-size:12px;position: absolute; top:45px;left:1110px;color:green;"><b></b></p>
 
 
 </div>
@@ -110,6 +126,14 @@ xhr_camp.addEventListener("readystatechange", function() {
         var createdBy = obj.d.results[0].CreatedByUser;
         var CampaignName = getUrlVars()["CampaignName"];
         var Id = getUrlVars()["Id"];
+        console.log(goal);
+        if (goal < '100')
+        {
+        	goal = '000';
+        	console.log("if conditipn");
+        	 console.log(goal);
+        }
+        
 
         document.getElementById("campaign").value = goal + "_" + createdBy + "_" + Id + "_" + CampaignName;
 
@@ -287,8 +311,16 @@ function getUrlVars() {
         vars[key] = value;
     });
     return vars;
+    
+   
 }
+var catCode = getUrlVars()["CategoryCode"];
 
+if (catCode != 'CME')
+{
+ document.body.innerHTML = '';
+}
 </script>
 </body>
 </html>
+
